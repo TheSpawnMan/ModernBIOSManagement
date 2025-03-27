@@ -127,6 +127,12 @@ Process {
 	# WinUPTP bios upgrade utility file name
 	if (([Environment]::Is64BitOperatingSystem) -eq $true) {
 		$WinUPTPUtility = Get-ChildItem -Path $Path -Filter "*.exe" -Recurse | Where-Object { $_.Name -like "WinUPTP64.exe"	} | Select-Object -ExpandProperty FullName
+    
+    # If no WinUPTP64.exe is found, fallback to WinUPTP.exe
+    if (-not $WinUPTPUtility) {
+        Write-CMLogEntry -Value "WinUPTP64.exe not found. Searching for WinUPTP.exe." -Severity 1
+        $WinUPTPUtility = Get-ChildItem -Path $Path -Filter "*.exe" -Recurse | Where-Object { $_.Name -like "WinUPTP.exe" } | Select-Object -ExpandProperty FullName
+    }
 	}
 	else {
 		$WinUPTPUtility = Get-ChildItem -Path $Path -Filter "*.exe" -Recurse | Where-Object { $_.Name -like "WinUPTP.exe" } | Select-Object -ExpandProperty FullName
@@ -135,6 +141,12 @@ Process {
     # Flash CMD upgrade utility file name
     if (([Environment]::Is64BitOperatingSystem) -eq $true) {
         $FlashCMDUtility = Get-ChildItem -Path $Path -Filter "*.cmd" -Recurse | Where-Object { $_.Name -like "Flash64.cmd" } | Select-Object -ExpandProperty FullName
+
+    # If no WinUPTP64.exe is found, fallback to WinUPTP.exe
+    if (-not $FlashCMDUtility) {
+        Write-CMLogEntry -Value "Flash64.exe not found. Searching for Flash.exe." -Severity 1
+        $FlashCMDUtility = Get-ChildItem -Path $Path -Filter "*.exe" -Recurse | Where-Object { $_.Name -like "Flash.exe" } | Select-Object -ExpandProperty FullName
+    }
     }
     else {
         $FlashCMDUtility = Get-ChildItem -Path $Path -Filter "*.cmd" -Recurse | Where-Object { $_.Name -like "Flash.cmd" } | Select-Object -ExpandProperty FullName
